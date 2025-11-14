@@ -1,8 +1,31 @@
 import { NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 
-export async function POST(req) {
+interface CartItem {
+  [key: string]: unknown;
+}
+
+interface CartPayload {
+  items: CartItem[];
+}
+
+interface ErrorResponse {
+  error: string;
+}
+
+interface SuccessResponse {
+  ok: true;
+  orderId: string;
+}
+
+interface FailureResponse {
+  ok: false;
+  message: string;
+}
+
+export async function POST(req: NextRequest): Promise<NextResponse<ErrorResponse | SuccessResponse | FailureResponse>> {
   try {
-    const body = await req.json();
+    const body: CartPayload = await req.json();
     if (!body || !Array.isArray(body.items)) {
       return NextResponse.json({ error: 'Invalid cart payload' }, { status: 400 });
     }
